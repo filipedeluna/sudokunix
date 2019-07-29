@@ -1,0 +1,66 @@
+/*
+    Main
+*/
+
+* {
+    background-color: rgb(255, 255, 255);
+    color: black;
+}
+
+.btn {
+    background-color: rgb(255, 255, 255);
+    color: black;
+    border: 1px solid black;
+}
+
+/*
+    Game Grid
+*/
+
+.gamegrid {
+    border: 5px solid black;
+    margin: 20px;
+}
+
+.gamegrid-node {
+    border: 1px solid black;
+    font-size: 22px;
+}
+
+.gamegrid-node--topborder {
+    border-top: 5px solid black;
+}
+
+.gamegrid-node--bottomborder {
+    border-bottom: 5px solid black;
+}
+
+.gamegrid-node--leftborder {
+    border-left: 5px solid black;
+}
+
+.gamegrid-node--rightborder {
+    border-right: 5px solid black;
+}
+
+.numbergrid {
+    border: 5px solid black;
+    margin: 5px;
+}
+
+.numbergrid-node {
+    border: 1px solid black;
+    font-size: 22px;
+}
+
+.gamegrid-node {
+    border-right: 5px solid black;
+}
+
+.gamegrid-node--inactive {
+    background-color: lightgray;
+}
+
+.gamegrid-node--wrong {
+    background-color: indianred;
+}
