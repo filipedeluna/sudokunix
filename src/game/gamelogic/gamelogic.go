@@ -2,6 +2,7 @@ package gamelogic
 
 import (
 	"bufio"
+	. "game/gamewindow"
 	"github.com/gotk3/gotk3/gtk"
 	"math/rand"
 	"os"
@@ -18,7 +19,7 @@ const N_OF_LINES int = 9
 
 const ALPHABET string = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
-func LaunchNumberSelectWindow(gridLabel *gtk.Label) {
+func LaunchNumberSelectWindow(gridLabel *gtk.Label, window *GameWindow) {
 	win, styleProvider := gtkutils.NewWindow("Choose number")
 
 	numberGrid, _ := gtk.GridNew()
@@ -70,8 +71,9 @@ func LaunchNumberSelectWindow(gridLabel *gtk.Label) {
 
 	win.Add(numberGrid);
 
+	// Set this window as active window in game
 	// Recursively show all widgets contained in this window.
-	win.ShowAll()
+	window.Launch(win)
 }
 
 func SetNodeValue(val string, lab *gtk.Label, win *gtk.Window) {
@@ -158,7 +160,7 @@ func getFileByDifficulty(diff int) (*os.File, error) {
 }
 
 func assignRandomNumbersToSeed(seed string, nLines int) string {
-	characters := []rune("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
+	characters := []rune(ALPHABET)
 	characters = characters[:nLines]
 
 	// Append numbers

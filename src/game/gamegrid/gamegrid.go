@@ -1,12 +1,11 @@
 package gamegrid
 
 import (
-	"game/gamelogic"
+	. "game/gamelogic"
+	. "game/gamewindow"
 	"github.com/gotk3/gotk3/glib"
 	"github.com/gotk3/gotk3/gtk"
 )
-
-const N_OF_LINES int = 9
 
 type GameGrid struct {
 	Grid  *gtk.Grid
@@ -78,8 +77,8 @@ func addGridNodeBorders(ctx *gtk.StyleContext, x int, y int) {
 	}
 }
 
-func (g *GameGrid) CreateNewPuzzle(diff int) {
-	newPuzzle := gamelogic.GenerateNewPuzzle(diff);
+func (g *GameGrid) CreateNewPuzzle(diff int, window *GameWindow) {
+	newPuzzle := GenerateNewPuzzle(diff);
 
 	i := 0
 
@@ -90,7 +89,7 @@ func (g *GameGrid) CreateNewPuzzle(diff int) {
 				g.Nodes[x][y].SetInactive()
 			} else {
 				g.Nodes[x][y].Label.SetText("")
-				g.Nodes[x][y].SetActive()
+				g.Nodes[x][y].SetActive(window)
 			}
 
 			i++
@@ -98,13 +97,13 @@ func (g *GameGrid) CreateNewPuzzle(diff int) {
 	}
 }
 
-func (n *Node) SetActive() {
+func (n *Node) SetActive(window *GameWindow) {
 	if n.Signal != 0 {
 		n.EventBox.HandlerDisconnect(n.Signal)
 		n.Signal = 0
 	}
 
-	n.Signal, _ = n.EventBox.Connect("button_press_event", func() { gamelogic.LaunchNumberSelectWindow(n.Label) })
+	n.Signal, _ = n.EventBox.Connect("button_press_event", func() { LaunchNumberSelectWindow(n.Label, window) })
 
 	ctx, _ := n.Label.GetStyleContext()
 	ctx.RemoveClass("gamegrid-node--inactive")

@@ -1,7 +1,8 @@
 package main
 
 import (
-	"game/gamegrid"
+	. "game/gamegrid"
+	. "game/gamewindow"
 	"github.com/gotk3/gotk3/gtk"
 	"log"
 	"os"
@@ -11,11 +12,12 @@ import (
 type GameStatus struct {
 	Won bool
 	Active bool // controls if user can insert/remove numbers
+	gameWindow GameWindow // These are popup windows. There should only be one active at any given time (eg. pick number)
 }
 
 func main() {
 	// Initialize the game status
-	gameStatus := GameStatus{ false, false }
+	gameStatus := GameStatus{ false, false, GameWindow { } }
 
 	// GTK Init
 	win, styleProvider, err := gtkutils.GtkInit()
@@ -31,14 +33,14 @@ func main() {
 	uiGridCtx.AddProvider(styleProvider, gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
 
 	// Add game gamegrid
-	gameGrid := gamegrid.DrawGrid(styleProvider)
+	gameGrid := DrawGrid(styleProvider)
 	uiGrid.Attach(gameGrid.Grid,1, 1, 9, 9)
 
 	// Add new game button
 	newGameBtn, _ := gtk.ButtonNewWithLabel("New Game")
 	diff := 1 // temporary
 	startNewGame := func() {
-		gameGrid.CreateNewPuzzle(diff)
+		gameGrid.CreateNewPuzzle(diff, &gameStatus.gameWindow) // window sent as ref
 		gameStatus.Active = true
 	}
 	newGameBtn.Connect("clicked", startNewGame)
