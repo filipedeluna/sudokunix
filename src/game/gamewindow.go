@@ -1,4 +1,4 @@
-package gamewindow
+package game
 
 import (
 	"github.com/gotk3/gotk3/gtk"

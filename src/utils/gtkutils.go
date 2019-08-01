@@ -1,4 +1,4 @@
-package gtkutils
+package utils
 
 import (
 	"github.com/gotk3/gotk3/gtk"
@@ -41,4 +41,20 @@ func NewWindow(title string) (*gtk.Window, *gtk.CssProvider) {
 	win.SetDefaultSize(200, 150)
 
 	return win, styleProvider
+}
+
+func AddStyleClassAndProvider(actionable *gtk.Widget, styleProvider gtk.IStyleProvider, class string) {
+	// Add CSS classes to node
+	ctx, _ := actionable.GetStyleContext()
+	ctx.AddClass(class)
+	ctx.AddProvider(styleProvider, gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
+}
+
+func CreateLabel(text string) (*gtk.Label, error) {
+	lab, err := gtk.LabelNew(text)
+	lab.SetJustify(gtk.JUSTIFY_CENTER)
+	lab.SetHExpand(true)
+	lab.SetVExpand(true)
+
+	return lab, err
 }

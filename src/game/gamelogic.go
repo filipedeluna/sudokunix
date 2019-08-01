@@ -1,14 +1,11 @@
-package gamelogic
+package game
 
 import (
 	"bufio"
-	. "game/gamewindow"
-	"github.com/gotk3/gotk3/gtk"
 	"math/rand"
 	"os"
 	"strconv"
 	"time"
-	"utils/gtkutils"
 )
 
 const HARD_SEEDS_FILE string = "hard.txt"
@@ -18,69 +15,6 @@ const EASY_SEEDS_FILE string = "easy.txt"
 const N_OF_LINES int = 9
 
 const ALPHABET string = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-
-func LaunchNumberSelectWindow(gridLabel *gtk.Label, window *GameWindow) {
-	win, styleProvider := gtkutils.NewWindow("Choose number")
-
-	numberGrid, _ := gtk.GridNew()
-	numberGrid.SetOrientation(gtk.ORIENTATION_VERTICAL)
-	numberGridCtx, _ := numberGrid.GetStyleContext()
-	numberGridCtx.AddClass("numbergrid")
-	numberGridCtx.AddProvider(styleProvider, gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
-
-	for x := 0; x < 9; x++ {
-		evBox, _ := gtk.EventBoxNew()
-
-		labelName := strconv.FormatInt(int64(x+1), 10)
-
-		lab, _ := gtk.LabelNew(labelName)
-		lab.SetJustify(gtk.JUSTIFY_CENTER)
-		lab.SetHExpand(true)
-		lab.SetVExpand(true)
-
-		// Add CSS classes to node
-		ctx, _ := lab.GetStyleContext()
-		ctx.AddClass("numbergrid-node")
-		ctx.AddProvider(styleProvider, gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
-
-		// Create OnClickEvent
-		evBox.Add(lab)
-		evBox.Connect("button_press_event", func() { SetNodeValue(labelName, gridLabel, win) })
-
-		numberGrid.Attach(evBox, x % 3, x / 3 + 1, 1, 1)
-	}
-
-	evBox, _ := gtk.EventBoxNew()
-
-	lab, _ := gtk.LabelNew("Clear")
-	lab.SetJustify(gtk.JUSTIFY_CENTER)
-	lab.SetHExpand(true)
-	lab.SetVExpand(true)
-
-	// Add CSS classes to node
-	ctx, _ := lab.GetStyleContext()
-	ctx.AddClass("numbergrid-node")
-	ctx.AddProvider(styleProvider, gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
-
-	// Create OnClickEvent
-	evBox.Add(lab)
-	evBox.Connect("button_press_event", func() { SetNodeValue("", gridLabel, win) })
-
-	numberGrid.Attach(evBox, 0, 4, 3, 1)
-
-
-	win.Add(numberGrid);
-
-	// Set this window as active window in game
-	// Recursively show all widgets contained in this window.
-	window.Launch(win)
-}
-
-func SetNodeValue(val string, lab *gtk.Label, win *gtk.Window) {
-	lab.SetText(val)
-	win.Close()
-}
-
 
 
 func GenerateNewPuzzle(diff int) string {

@@ -1,26 +1,24 @@
 package main
 
 import (
-	. "game/gamegrid"
-	. "game/gamewindow"
+	"game"
 	"github.com/gotk3/gotk3/gtk"
 	"log"
 	"os"
-	"utils/gtkutils"
+	"utils"
 )
 
 type GameStatus struct {
 	Won bool
 	Active bool // controls if user can insert/remove numbers
-	gameWindow GameWindow // These are popup windows. There should only be one active at any given time (eg. pick number)
 }
 
 func main() {
 	// Initialize the game status
-	gameStatus := GameStatus{ false, false, GameWindow { } }
+	gameStatus := GameStatus{ false, false, }
 
 	// GTK Init
-	win, styleProvider, err := gtkutils.GtkInit()
+	win, styleProvider, err := utils.GtkInit()
 	if err != nil {
 		log.Fatal("Failed to initialize GTK.")
 	}
@@ -28,27 +26,23 @@ func main() {
 	// Create a new gamegrid widget to arrange child widgets
 	uiGrid, _ := gtk.GridNew()
 	uiGrid.SetOrientation(gtk.ORIENTATION_VERTICAL)
-	uiGridCtx, _ := uiGrid.GetStyleContext()
-	uiGridCtx.AddClass("grid")
-	uiGridCtx.AddProvider(styleProvider, gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
+	utils.AddStyleClassAndProvider(&uiGrid.Widget, styleProvider, "grid")
 
 	// Add game gamegrid
-	gameGrid := DrawGrid(styleProvider)
+	gameGrid := game.DrawGrid(styleProvider)
 	uiGrid.Attach(gameGrid.Grid,1, 1, 9, 9)
 
 	// Add new game button
 	newGameBtn, _ := gtk.ButtonNewWithLabel("New Game")
 	diff := 1 // temporary
 	startNewGame := func() {
-		gameGrid.CreateNewPuzzle(diff, &gameStatus.gameWindow) // window sent as ref
+		gameGrid.CreateNewPuzzle(diff) // window sent as ref
 		gameStatus.Active = true
 	}
 	newGameBtn.Connect("clicked", startNewGame)
-	newGameBtnCtx, _ := newGameBtn.GetStyleContext()
-	newGameBtnCtx.AddClass("btn")
-	newGameBtnCtx.AddProvider(styleProvider, gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
+	utils.AddStyleClassAndProvider(&newGameBtn.Widget, styleProvider, "btn")
 
-	uiGrid.Attach(newGameBtn, 0, 11, 3, 1)
+	uiGrid.Attach(newGameBtn, 0, 11, 2, 1)
 	newGameBtn.SetHExpand(true)
 	newGameBtn.SetVExpand(true)
 
@@ -56,11 +50,10 @@ func main() {
 	exitBtn, _ := gtk.ButtonNewWithLabel("Exit")
 	gracefulExit := func() { os.Exit(0) }
 	exitBtn.Connect("clicked", gracefulExit)
-	exitBtnCtx, _ := exitBtn.GetStyleContext()
-	exitBtnCtx.AddClass("btn")
-	exitBtnCtx.AddProvider(styleProvider, gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
+	utils.AddStyleClassAndProvider(&exitBtn.Widget, styleProvider, "btn")
 
-	uiGrid.Attach(exitBtn, 8, 11, 3, 1)
+
+	uiGrid.Attach(exitBtn, 9, 11, 2, 1)
 	exitBtn.SetHExpand(true)
 	exitBtn.SetVExpand(true)
 
