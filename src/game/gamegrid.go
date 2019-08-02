@@ -18,6 +18,8 @@ type Node struct {
 	Value int
 	X int
 	Y int
+	isWrong bool
+	isActive bool
 	EventBox *gtk.EventBox
 	Signal glib.SignalHandle
 }
@@ -48,7 +50,7 @@ func DrawGrid(styleProvider *gtk.CssProvider) GameGrid {
 
 			grid.Attach(evBox, x, y, 1, 1)
 
-			nodes[x][y] = Node{ lab, 0,x, y,evBox, 0 }
+			nodes[x][y] = Node{ lab, 0,x, y,false, false, evBox, 0 }
 		}
 	}
 
@@ -56,7 +58,6 @@ func DrawGrid(styleProvider *gtk.CssProvider) GameGrid {
 		Grid:   grid,
 		Nodes:  nodes,
 		Window: GameWindow{},
-
 	}
 
 	return gameGrid
@@ -81,10 +82,11 @@ func (g *GameGrid) CreateNewPuzzle(diff int) {
 		for y := 0; y < N_OF_LINES; y++ {
 			if newPuzzle[i] != '0' {
 				g.Nodes[x][y].Label.SetText(string(newPuzzle[i]))
-				g.Nodes[x][y].Value = int(newPuzzle[i])
+				g.Nodes[x][y].Value, _ = strconv.Atoi(string(newPuzzle[i]))
 				g.Nodes[x][y].SetInactive()
 			} else {
 				g.Nodes[x][y].Label.SetText("")
+				g.Nodes[x][y].Value = 0
 				g.Nodes[x][y].SetActive(g)
 			}
 
@@ -99,20 +101,13 @@ func (n *Node) SetActive(grid *GameGrid) {
 		n.Signal = 0
 	}
 
-	n.Signal, _ = n.EventBox.Connect("button_press_event", func() { n.Click(grid) })
+	n.Signal, _ = n.EventBox.Connect("button_press_event", func() { grid.NewNumberSelectWindow(n) })
 
 	ctx, _ := n.Label.GetStyleContext()
 	ctx.RemoveClass("gamegrid-node--inactive")
+
+	n.isActive = true
 }
-
-func (n *Node) Click(grid *GameGrid) {
-	// Create the window
-	win := n.NewNumberSelectWindow()
-
-	//Launch the window and set it as active in app
-	grid.Window.Launch(win)
-}
-
 
 func (n *Node) SetInactive() {
 	if n.Signal != 0 {
@@ -122,19 +117,25 @@ func (n *Node) SetInactive() {
 
 	ctx, _ := n.Label.GetStyleContext()
 	ctx.AddClass("gamegrid-node--inactive")
+
+	n.isActive = false
 }
 
-func (n Node) SetWrong() {
+func (n *Node) SetWrong() {
 	ctx, _ := n.Label.GetStyleContext()
 	ctx.AddClass("gamegrid-node--wrong")
+
+	n.isWrong = true
 }
 
-func (n Node) UnsetWrong() {
+func (n *Node) UnsetWrong() {
 	ctx, _ := n.Label.GetStyleContext()
 	ctx.RemoveClass("gamegrid-node--wrong")
+
+	n.isWrong = false
 }
 
-func (n *Node) NewNumberSelectWindow() *gtk.Window {
+func (g *GameGrid) NewNumberSelectWindow(node *Node) {
 	win, styleProvider := utils.NewWindow("Choose number")
 
 	numberGrid, _ := gtk.GridNew()
@@ -154,7 +155,7 @@ func (n *Node) NewNumberSelectWindow() *gtk.Window {
 
 		// Create OnClickEvent
 		evBox.Add(lab)
-		evBox.Connect("button_press_event", func() { n.SetNodeValue(labelName, win) })
+		evBox.Connect("button_press_event", func() { g.NumberSelect(labelName, node) })
 
 		numberGrid.Attach(evBox, x % 3, x / 3 + 1, 1, 1)
 	}
@@ -168,27 +169,52 @@ func (n *Node) NewNumberSelectWindow() *gtk.Window {
 
 	// Create OnClickEvent
 	evBox.Add(lab)
-	evBox.Connect("button_press_event", func() { n.SetNodeValue("", win) })
+	evBox.Connect("button_press_event", func() { g.NumberSelect("", node) })
 
 	numberGrid.Attach(evBox, 0, 4, 3, 1)
 
 	win.Add(numberGrid);
 
-	return win
+	g.Window.Launch(win)
 }
 
-func (n *Node) SetNodeValue(val string, win *gtk.Window) {
-	n.Label.SetText(val)
+func (g *GameGrid) NumberSelect(val string, node *Node) {
+	// Close the window
+	g.Window.window.Close()
 
-	if val != "" {
-		n.Value = 0
-		n.UnsetWrong()
-	} else {
-		n.Value, _ = strconv.Atoi(val)
-		//checkIfNodeIsWrong
+	// Set the value
+	node.SetNodeValue(val)
+
+	// Check if node is wrong
+	node.UnsetWrong()
+
+	if val == "" {
+		node.isWrong = false
+		return // Empty value cannot be wrong
 	}
 
+	wrong := g.VerifyNode(node)
+	node.isWrong = wrong
 
-	win.Close()
+	if wrong {
+		node.SetWrong()
+	} else {
+		// Verify if all are correct and filled
+		wrong = g.VerifyAllNodes()
 
+		// Game is won
+		if !wrong {
+			g.SetAllNodesAsInactive()
+		}
+	}
+}
+
+func (n *Node) SetNodeValue(val string) {
+	n.Label.SetText(val)
+
+	if val == "" {
+		n.Value = 0
+	} else {
+		n.Value, _ = strconv.Atoi(val)
+	}
 }

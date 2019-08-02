@@ -134,3 +134,62 @@ func assignRandomNumbersToSeed(seed string, nLines int) string {
 
 	return string(newSeed)
 }
+
+// Returns true if node is wrong
+func (g GameGrid) VerifyNode(node *Node) bool {
+	// Verify node square
+	nodeCol := node.X / 3
+	nodeRow := node.Y / 3
+
+	for x := nodeCol * 3; x < nodeCol * 3 + 3; x++ {
+		for y := nodeRow * 3; y < nodeRow * 3 + 3; y++ {
+			if node.X != x && node.Y != y {
+				if node.Value == g.Nodes[x][y].Value {
+					return true
+				}
+			}
+		}
+	}
+
+	// Verify Horizontal
+	for y := 0; y < N_OF_LINES; y++ {
+		if node.Y != y {
+			if node.Value == g.Nodes[node.X][y].Value {
+				return true
+			}
+		}
+	}
+
+	// Verify Vertical
+	for x := 0; x < N_OF_LINES; x++ {
+		if node.X != x {
+			if node.Value == g.Nodes[x][node.Y].Value {
+				return true
+			}
+		}
+	}
+
+	return false
+}
+
+// Returns true if any node is wrong
+func (g GameGrid) VerifyAllNodes() bool {
+	for x := 0; x < N_OF_LINES; x++ {
+		for y := 0; y < N_OF_LINES; y++ {
+			if g.Nodes[x][y].isWrong || (g.Nodes[x][y].Value == 0 && g.Nodes[x][y].isActive) {
+				return true
+			}
+		}
+	}
+
+	return false
+}
+
+// Set all nodes as inactive
+func (g *GameGrid) SetAllNodesAsInactive() {
+	for x := 0; x < N_OF_LINES; x++ {
+		for y := 0; y < N_OF_LINES; y++ {
+			g.Nodes[x][y].SetInactive()
+		}
+	}
+}

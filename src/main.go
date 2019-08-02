@@ -1,22 +1,14 @@
 package main
 
 import (
-	"game"
+	. "game"
 	"github.com/gotk3/gotk3/gtk"
 	"log"
 	"os"
 	"utils"
 )
 
-type GameStatus struct {
-	Won bool
-	Active bool // controls if user can insert/remove numbers
-}
-
 func main() {
-	// Initialize the game status
-	gameStatus := GameStatus{ false, false, }
-
 	// GTK Init
 	win, styleProvider, err := utils.GtkInit()
 	if err != nil {
@@ -29,16 +21,13 @@ func main() {
 	utils.AddStyleClassAndProvider(&uiGrid.Widget, styleProvider, "grid")
 
 	// Add game gamegrid
-	gameGrid := game.DrawGrid(styleProvider)
+	gameGrid := DrawGrid(styleProvider)
 	uiGrid.Attach(gameGrid.Grid,1, 1, 9, 9)
 
 	// Add new game button
 	newGameBtn, _ := gtk.ButtonNewWithLabel("New Game")
 	diff := 1 // temporary
-	startNewGame := func() {
-		gameGrid.CreateNewPuzzle(diff) // window sent as ref
-		gameStatus.Active = true
-	}
+	startNewGame := func() { gameGrid.CreateNewPuzzle(diff) }
 	newGameBtn.Connect("clicked", startNewGame)
 	utils.AddStyleClassAndProvider(&newGameBtn.Widget, styleProvider, "btn")
 
