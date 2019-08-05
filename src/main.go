@@ -26,8 +26,7 @@ func main() {
 
 	// Add new game button
 	newGameBtn, _ := gtk.ButtonNewWithLabel("New Game")
-	diff := 1 // temporary
-	startNewGame := func() { gameGrid.CreateNewPuzzle(diff) }
+	startNewGame := func() { NewDifficultySelectWindow(&gameGrid) }
 	newGameBtn.Connect("clicked", startNewGame)
 	utils.AddStyleClassAndProvider(&newGameBtn.Widget, styleProvider, "btn")
 

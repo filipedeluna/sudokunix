@@ -101,7 +101,7 @@ func (n *Node) SetActive(grid *GameGrid) {
 		n.Signal = 0
 	}
 
-	n.Signal, _ = n.EventBox.Connect("button_press_event", func() { grid.NewNumberSelectWindow(n) })
+	n.Signal, _ = n.EventBox.Connect("button_press_event", func() { NewNumberSelectWindow(grid, n) })
 
 	ctx, _ := n.Label.GetStyleContext()
 	ctx.RemoveClass("gamegrid-node--inactive")
@@ -133,49 +133,6 @@ func (n *Node) UnsetWrong() {
 	ctx.RemoveClass("gamegrid-node--wrong")
 
 	n.isWrong = false
-}
-
-func (g *GameGrid) NewNumberSelectWindow(node *Node) {
-	win, styleProvider := utils.NewWindow("Choose number")
-
-	numberGrid, _ := gtk.GridNew()
-	numberGrid.SetOrientation(gtk.ORIENTATION_VERTICAL)
-
-	utils.AddStyleClassAndProvider(&numberGrid.Widget, styleProvider, "numbergrid")
-
-	for x := 0; x < 9; x++ {
-		evBox, _ := gtk.EventBoxNew()
-
-		labelName := strconv.FormatInt(int64(x+1), 10)
-
-		lab, _ := utils.CreateLabel(labelName)
-
-		// Add CSS classes to node
-		utils.AddStyleClassAndProvider(&lab.Widget, styleProvider, "numbergrid-node")
-
-		// Create OnClickEvent
-		evBox.Add(lab)
-		evBox.Connect("button_press_event", func() { g.NumberSelect(labelName, node) })
-
-		numberGrid.Attach(evBox, x % 3, x / 3 + 1, 1, 1)
-	}
-
-	evBox, _ := gtk.EventBoxNew()
-
-	lab, _ := utils.CreateLabel("Clear")
-
-	// Add CSS classes to node
-	utils.AddStyleClassAndProvider(&lab.Widget, styleProvider, "numbergrid-node")
-
-	// Create OnClickEvent
-	evBox.Add(lab)
-	evBox.Connect("button_press_event", func() { g.NumberSelect("", node) })
-
-	numberGrid.Attach(evBox, 0, 4, 3, 1)
-
-	win.Add(numberGrid);
-
-	g.Window.Launch(win)
 }
 
 func (g *GameGrid) NumberSelect(val string, node *Node) {
