@@ -1,11 +1,11 @@
 package main
 
 import (
-	. "game"
 	"github.com/gotk3/gotk3/gtk"
+	. "internal/game"
+	"internal/utils"
 	"log"
 	"os"
-	"utils"
 )
 
 func main() {

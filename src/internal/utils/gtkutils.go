@@ -5,6 +5,8 @@ import (
 	"log"
 )
 
+const CSS_FOLDER string = "src/assets/css/style.css"
+
 // GTK extensions
 func GtkInit() (*gtk.Window, *gtk.CssProvider, error) {
 	// Initialize GTK without parsing any command line arguments.
@@ -12,7 +14,7 @@ func GtkInit() (*gtk.Window, *gtk.CssProvider, error) {
 
 	// Create a style provider
 	styleProvider, _ := gtk.CssProviderNew();
-	styleProvider.LoadFromPath("src/style.css")
+	styleProvider.LoadFromPath(CSS_FOLDER)
 
 	// Create a new toplevel window, set its title, and connect it to the
 	// "destroy" signal to exit the GTK main loop when it is destroyed.
@@ -35,7 +37,7 @@ func NewWindow(title string) (*gtk.Window, *gtk.CssProvider) {
 
 	// Create a style provider
 	styleProvider, _ := gtk.CssProviderNew();
-	styleProvider.LoadFromPath("src/style.css")
+	styleProvider.LoadFromPath(CSS_FOLDER)
 
 	// Set the default window size.
 	win.SetDefaultSize(200, 150)

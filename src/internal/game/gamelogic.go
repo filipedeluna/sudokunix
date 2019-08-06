@@ -12,6 +12,8 @@ const HARD_SEEDS_FILE string = "hard.txt"
 const MED_SEEDS_FILE  string = "med.txt"
 const EASY_SEEDS_FILE string = "easy.txt"
 
+const SEEDS_FOLDER string ="src/assets/seeds/"
+
 const N_OF_LINES int = 9
 
 const ALPHABET string = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -88,7 +90,7 @@ func getFileByDifficulty(diff int) (*os.File, error) {
 	}
 
 	// Open file in path
-	path := "seeds/" + fileName
+	path := SEEDS_FOLDER + fileName
 
 	return os.Open(path)
 }
