@@ -11,6 +11,7 @@ type GameGrid struct {
 	Grid   *gtk.Grid
 	Nodes  [N_OF_LINES][N_OF_LINES]Node
 	Window GameWindow // These are popup windows. There should only be one active at any given time (eg. pick number)
+	CandidateMode bool // Alternates between write and candidate mode
 }
 
 type Node struct {
@@ -22,6 +23,7 @@ type Node struct {
 	isActive bool
 	EventBox *gtk.EventBox
 	Signal glib.SignalHandle
+	Candidates [N_OF_LINES]bool
 }
 
 func DrawGrid(styleProvider *gtk.CssProvider) GameGrid {
@@ -50,7 +52,7 @@ func DrawGrid(styleProvider *gtk.CssProvider) GameGrid {
 
 			grid.Attach(evBox, x, y, 1, 1)
 
-			nodes[x][y] = Node{ lab, 0,x, y,false, false, evBox, 0 }
+			nodes[x][y] = Node{ lab, 0,x, y,false, false, evBox, 0, [N_OF_LINES]bool{} }
 		}
 	}
 

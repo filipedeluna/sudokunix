@@ -5,7 +5,6 @@ import (
 	. "internal/game"
 	"internal/utils"
 	"log"
-	"os"
 )
 
 func main() {
@@ -27,28 +26,24 @@ func main() {
 	// Add new game button
 	newGameBtn, _ := gtk.ButtonNewWithLabel("New Game")
 	startNewGame := func() { NewDifficultySelectWindow(&gameGrid) }
+	newGameBtn.SetHAlign(gtk.ALIGN_CENTER)
 	newGameBtn.Connect("clicked", startNewGame)
 	utils.AddStyleClassAndProvider(&newGameBtn.Widget, styleProvider, "btn")
 
-	uiGrid.Attach(newGameBtn, 0, 11, 2, 1)
-	newGameBtn.SetHExpand(true)
-	newGameBtn.SetVExpand(true)
+	uiGrid.Attach(newGameBtn, 1, 11, 2, 1)
 
-	// Add exit button
-	exitBtn, _ := gtk.ButtonNewWithLabel("Exit")
-	gracefulExit := func() { os.Exit(0) }
-	exitBtn.Connect("clicked", gracefulExit)
-	utils.AddStyleClassAndProvider(&exitBtn.Widget, styleProvider, "btn")
+	// Add candidate mode checkbox
+	candModeChkbox, _ := gtk.CheckButtonNewWithLabel("Candidate Mode")
+	candModeChkbox.SetHAlign(gtk.ALIGN_CENTER)
+	candModeChkbox.Connect("clicked", func() { print("aol")})
+	utils.AddStyleClassAndProvider(&candModeChkbox.Widget, styleProvider, "btn")
 
-
-	uiGrid.Attach(exitBtn, 9, 11, 2, 1)
-	exitBtn.SetHExpand(true)
-	exitBtn.SetVExpand(true)
+	uiGrid.Attach(candModeChkbox, 5, 11, 2, 1)
 
 	win.Add(uiGrid)
 
 	// Set the default window size.
-	win.SetDefaultSize(800, 600)
+	win.SetDefaultSize(600, 600)
 
 	// Recursively show all widgets contained in this window.
 	win.ShowAll()
