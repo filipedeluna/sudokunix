@@ -35,7 +35,7 @@ func main() {
 	// Add candidate mode checkbox
 	candModeChkbox, _ := gtk.CheckButtonNewWithLabel("Candidate Mode")
 	candModeChkbox.SetHAlign(gtk.ALIGN_CENTER)
-	candModeChkbox.Connect("clicked", func() { print("aol")})
+	candModeChkbox.Connect("clicked", func() { gameGrid.SetCandidateMode(); })
 	utils.AddStyleClassAndProvider(&candModeChkbox.Widget, styleProvider, "btn")
 
 	uiGrid.Attach(candModeChkbox, 5, 11, 2, 1)

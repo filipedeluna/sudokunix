@@ -67,3 +67,7 @@
 .gamegrid-node--wrong {
     background-color: indianred;
 }
+
+.gamegrid-node--candidatemode {
+    font-size: 10px;
+}

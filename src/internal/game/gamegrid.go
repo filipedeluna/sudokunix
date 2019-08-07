@@ -23,7 +23,12 @@ type Node struct {
 	isActive bool
 	EventBox *gtk.EventBox
 	Signal glib.SignalHandle
-	Candidates [N_OF_LINES]bool
+	candidates [N_OF_LINES]bool
+	candidateMode bool
+}
+
+func (g *GameGrid) SetCandidateMode() {
+	g.CandidateMode = !g.CandidateMode
 }
 
 func DrawGrid(styleProvider *gtk.CssProvider) GameGrid {
@@ -52,7 +57,7 @@ func DrawGrid(styleProvider *gtk.CssProvider) GameGrid {
 
 			grid.Attach(evBox, x, y, 1, 1)
 
-			nodes[x][y] = Node{ lab, 0,x, y,false, false, evBox, 0, [N_OF_LINES]bool{} }
+			nodes[x][y] = Node{ lab, 0,x, y,false, false, evBox, 0, [N_OF_LINES]bool{}, false }
 		}
 	}
 
@@ -82,6 +87,8 @@ func (g *GameGrid) CreateNewPuzzle(diff int) {
 
 	for x := 0; x < N_OF_LINES; x++ {
 		for y := 0; y < N_OF_LINES; y++ {
+			g.Nodes[x][y].DisableCandidateMode()
+
 			if newPuzzle[i] != '0' {
 				g.Nodes[x][y].Label.SetText(string(newPuzzle[i]))
 				g.Nodes[x][y].Value, _ = strconv.Atoi(string(newPuzzle[i]))
@@ -138,32 +145,52 @@ func (n *Node) UnsetWrong() {
 }
 
 func (g *GameGrid) NumberSelect(val string, node *Node) {
-	// Close the window
 	g.Window.window.Close()
 
-	// Set the value
-	node.SetNodeValue(val)
-
-	// Check if node is wrong
 	node.UnsetWrong()
 
-	if val == "" {
-		node.isWrong = false
-		return // Empty value cannot be wrong
-	}
+	// Check if in candidate mode
+	if (g.CandidateMode) {
+		// Set the value
+		node.SetNodeValue("")
 
-	wrong := g.VerifyNode(node)
-	node.isWrong = wrong
+		node.EnableCandidateMode()
 
-	if wrong {
-		node.SetWrong()
+		if (val == "") { // Candidates need to be cleared
+			node.ResetCandidates()
+		} else {
+			fixedVal, _ := strconv.Atoi(val)
+
+			node.ToggleCandidate(fixedVal)
+
+			node.SetCandidatesLabel()
+		}
+
+
 	} else {
-		// Verify if all are correct and filled
-		wrong = g.VerifyAllNodes()
+		node.DisableCandidateMode()
 
-		// Game is won
-		if !wrong {
-			g.SetAllNodesAsInactive()
+		node.SetNodeValue(val)
+
+		// Empty value cannot be wrong
+		if val == "" {
+			return
+		}
+
+		// Verify if node is wrong
+		wrong := g.VerifyNode(node)
+		node.isWrong = wrong
+
+		if wrong {
+			node.SetWrong()
+		} else {
+			// Verify if all are correct and filled
+			wrong = g.VerifyAllNodes()
+
+			// Game is won
+			if !wrong {
+				g.SetAllNodesAsInactive()
+			}
 		}
 	}
 }
@@ -176,4 +203,45 @@ func (n *Node) SetNodeValue(val string) {
 	} else {
 		n.Value, _ = strconv.Atoi(val)
 	}
+}
+
+func (n *Node) EnableCandidateMode() {
+	if !n.candidateMode {
+		// Restart everything
+		n.candidateMode = true
+		n.candidates = [N_OF_LINES]bool{}
+	}
+
+	ctx, _ := n.Label.GetStyleContext()
+	ctx.AddClass("gamegrid-node--candidatemode")
+}
+
+func (n *Node) DisableCandidateMode() {
+	// Restart everything
+	n.candidateMode = false
+	n.candidates = [N_OF_LINES]bool{}
+
+	ctx, _ := n.Label.GetStyleContext()
+	ctx.RemoveClass("gamegrid-node--candidatemode")
+}
+
+func (n *Node) ToggleCandidate(val int) {
+	n.candidates[val - 1] = !n.candidates[val - 1]
+}
+
+func (n *Node) ResetCandidates() {
+	n.candidates = [N_OF_LINES]bool{}
+}
+
+func (n *Node) SetCandidatesLabel() {
+	output := ""
+
+	for i := 0; i < N_OF_LINES; i ++ {
+		if n.candidates[i] {
+			output = output + " " + strconv.Itoa(i + 1)
+		}
+
+	}
+
+	n.Label.SetText(output)
 }
