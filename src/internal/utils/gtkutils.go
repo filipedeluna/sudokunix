@@ -55,7 +55,6 @@ func AddStyleClassAndProvider(actionable *gtk.Widget, styleProvider gtk.IStylePr
 func CreateLabel(text string) (*gtk.Label, error) {
 	lab, err := gtk.LabelNew(text)
 	// lab.SetJustify(gtk.JUSTIFY_CENTER)
-	lab.SetJustify(gtk.JUSTIFY_LEFT)
 	lab.SetHExpand(true)
 	lab.SetVExpand(true)
 	lab.SetMaxWidthChars(5)

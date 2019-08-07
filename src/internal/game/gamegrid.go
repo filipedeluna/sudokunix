@@ -236,11 +236,17 @@ func (n *Node) ResetCandidates() {
 func (n *Node) SetCandidatesLabel() {
 	output := ""
 
+	k := 0
 	for i := 0; i < N_OF_LINES; i ++ {
 		if n.candidates[i] {
-			output = output + " " + strconv.Itoa(i + 1)
-		}
+			if k == 3 {
+				k = 0
+				output += "\n"
+			}
 
+			output += " " + strconv.Itoa(i + 1)
+			k++
+		}
 	}
 
 	n.Label.SetText(output)
