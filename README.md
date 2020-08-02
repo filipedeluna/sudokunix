@@ -1,4 +1,4 @@
-# sudokunix
+# SudokUnix
 Sudoku implemented using Go and GTK3 (gotk3)
 
 This is my first Go project since I started learning Go on Udemy.
