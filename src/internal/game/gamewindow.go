@@ -2,7 +2,7 @@ package game
 
 import (
 	"github.com/gotk3/gotk3/gtk"
-	"internal/utils"
+	"deluna.pt/luna/sudokunix/internal/utils"
 	"strconv"
 )
 
@@ -65,7 +65,7 @@ func NewNumberSelectWindow(g *GameGrid, node *Node) {
 
 	numberGrid.Attach(evBox, 0, 4, 3, 1)
 
-	win.Add(numberGrid);
+	win.Add(numberGrid)
 
 	g.Window.Launch(win)
 }
@@ -105,7 +105,7 @@ func NewDifficultySelectWindow(g *GameGrid) {
 		diffGrid.Attach(evBox, 0, x - 1, 1, 1)
 	}
 
-	win.Add(diffGrid);
+	win.Add(diffGrid)
 
 	g.Window.Launch(win)
 }

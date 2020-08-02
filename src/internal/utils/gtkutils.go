@@ -5,7 +5,7 @@ import (
 	"log"
 )
 
-const CSS_FOLDER string = "src/assets/css/style.css"
+const CSS_FOLDER string = "assets/css/style.css"
 
 // GTK extensions
 func GtkInit() (*gtk.Window, *gtk.CssProvider, error) {
@@ -13,7 +13,7 @@ func GtkInit() (*gtk.Window, *gtk.CssProvider, error) {
 	gtk.Init(nil)
 
 	// Create a style provider
-	styleProvider, _ := gtk.CssProviderNew();
+	styleProvider, _ := gtk.CssProviderNew()
 	styleProvider.LoadFromPath(CSS_FOLDER)
 
 	// Create a new toplevel window, set its title, and connect it to the
@@ -36,7 +36,7 @@ func NewWindow(title string) (*gtk.Window, *gtk.CssProvider) {
 	win.SetTitle(title)
 
 	// Create a style provider
-	styleProvider, _ := gtk.CssProviderNew();
+	styleProvider, _ := gtk.CssProviderNew()
 	styleProvider.LoadFromPath(CSS_FOLDER)
 
 	// Set the default window size.

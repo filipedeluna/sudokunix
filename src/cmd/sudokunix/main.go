@@ -1,9 +1,9 @@
 package main
 
 import (
+	. "deluna.pt/luna/sudokunix/internal/game"
+	"deluna.pt/luna/sudokunix/internal/utils"
 	"github.com/gotk3/gotk3/gtk"
-	. "internal/game"
-	"internal/utils"
 	"log"
 )
 

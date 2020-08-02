@@ -3,7 +3,7 @@ package game
 import (
 	"github.com/gotk3/gotk3/glib"
 	"github.com/gotk3/gotk3/gtk"
-	"internal/utils"
+	"deluna.pt/luna/sudokunix/internal/utils"
 	"strconv"
 )
 
@@ -81,7 +81,7 @@ func addGridNodeBorders(ctx *gtk.StyleContext, x int, y int) {
 }
 
 func (g *GameGrid) CreateNewPuzzle(diff int) {
-	newPuzzle := GenerateNewPuzzle(diff);
+	newPuzzle := GenerateNewPuzzle(diff)
 
 	i := 0
 
@@ -150,13 +150,13 @@ func (g *GameGrid) NumberSelect(val string, node *Node) {
 	node.UnsetWrong()
 
 	// Check if in candidate mode
-	if (g.CandidateMode) {
+	if g.CandidateMode {
 		// Set the value
 		node.SetNodeValue("")
 
 		node.EnableCandidateMode()
 
-		if (val == "") { // Candidates need to be cleared
+		if val == "" { // Candidates need to be cleared
 			node.ResetCandidates()
 		} else {
 			fixedVal, _ := strconv.Atoi(val)

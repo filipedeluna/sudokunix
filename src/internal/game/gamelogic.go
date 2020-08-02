@@ -12,7 +12,7 @@ const HARD_SEEDS_FILE string = "hard.txt"
 const MED_SEEDS_FILE  string = "med.txt"
 const EASY_SEEDS_FILE string = "easy.txt"
 
-const SEEDS_FOLDER string ="src/assets/seeds/"
+const SEEDS_FOLDER string ="assets/seeds/"
 
 const N_OF_LINES int = 9
 
@@ -100,7 +100,7 @@ func assignRandomNumbersToSeed(seed string, nLines int) string {
 	characters = characters[:nLines]
 
 	// Append numbers
-	numbers := []int{}
+	var numbers []int
 	for i := 1; i <= nLines; i++ {
 		numbers = append(numbers, i)
 	}
