@@ -9,10 +9,12 @@ To do:
 - Fix glitches when adding candidates.
 - Tidy up code
 
-Install and Run (Ubuntu):
+---------------------
 
-sudo apt install libgtk-3-dev libcairo2-dev libglib2.0-dev -y
+# Install and Run (Ubuntu):
 
-cd src
+- sudo apt install libgtk-3-dev libcairo2-dev libglib2.0-dev -y
 
-go run cmd/sudokunix/main.go
+- cd src
+
+- go run cmd/sudokunix/main.go
